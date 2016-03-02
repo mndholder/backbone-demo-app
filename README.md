@@ -1,2 +1,2 @@
-# backbone-demo-app
-Backbone Demo Application
+# Backbone Demo Application
+Simple application which uses Backbone.
