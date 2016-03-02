@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Backbone Macy's demo app</title>
+
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/css/bootstrap-material-design.min.css">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Libraries -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.4.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <a class="navbar-brand" href="index.html">Backbone Demo App</a>
+    </nav>
+    <section id="app-section">
+        <div class="container" id="app-container">
+        </div>
+    </section>
+
+    <script type="text/x-handlebars-template" id="template-app">
+        <div id="app-person-list-view"></div>
+        <div id="app-form-view"></div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="template-person-form">
+        <h1>Person details</h1>
+        <div class="well">
+            <form class="form-horizontal">
+                <div id="person-form-person-details">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">First Name</label>
+                        <div class="col-md-10">
+                            <input type="text" required="required" name="firstName" id="fname" value="{{firstName}}" class="form-control" autofocus/>
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Last Name</label>
+                        <div class="col-md-10">
+                            <input type="text" name="lastName" required="required" id="lname" value="{{lastName}}" class="form-control" />
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 text-warning text-center form-error-message">
+                            <span id="person-form-person-details-error"></span>
+                        </div>
+                        <div class="col-md-2 text-right">
+                            <button type="button" class="btn btn-warning btn-raised" id="app-person-form-cancel">Cancel</button>
+                            <button type="button" class="btn btn-info btn-raised" id="app-person-form-next">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="person-form-address-details">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Address One</label>
+                        <div class="col-md-10">
+                            <input type="text" required="required" name="address.addressOne" id="addOne" class="form-control" value="{{address.addressOne}}" autofocus/>
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Address Two</label>
+                        <div class="col-md-10">
+                            <input type="text" name="address.addressTwo" id="addTwo" class="form-control" value="{{address.addressTwo}}" />
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">City</label>
+                        <div class="col-md-10">
+                            <input type="text" name="address.city" id="city" class="form-control" value="{{address.city}}" />
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">State</label>
+                        <div class="col-md-10">
+                            <input type="text" name="address.state" id="state" class="form-control" value="{{address.state}}" />
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">ZipCode</label>
+                        <div class="col-md-10">
+                            <input type="number" name="address.zipCode" id="zipcode"  class="form-control" value="{{address.zipCode}}" />
+                            <p class="form-control-error text-danger">&nbsp;</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-8 text-warning text-center form-error-message">
+                            <span id="person-form-address-details-error"></span>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <button type="button" class="btn btn-info btn-raised" id="app-person-form-back">Back</button>
+                            <button type="button" class="btn btn-primary btn-raised" id="app-person-form-complete">Finish</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="template-person-list">
+        <h1><i class="material-icons">account_circle</i>  List of amazing people</h1>
+        <div class="text-right">
+            <button class="btn btn-primary btn-raised" id="app-add-person"><i class="material-icons">account_circle</i> Add a person</button>
+        </div>
+        <div class="list-group well" id="app-person-list">
+            {{#unless length}}
+            <p class="text-center text-primary">No amazing people so far. Please add some</p>
+            {{/unless}}
+        </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="template-person-row">
+        <div class="list-group-item row">
+            <div class="col-xs-8">
+                <div class="row-picture">
+                    <i class="material-icons">account_box</i>
+                </div>
+                <div class="row-content">
+                    <h4 class="list-group-item-heading">{{firstName}} {{lastName}}</h4>
+                    <p class="list-group-item-text">
+                        {{calculatedAddress}}
+                    </p>
+                </div>
+            </div>
+            <div class="col-xs-4 text-right">
+                <button class="btn btn-primary" id="app-edit-person"><i class="material-icons">mode_edit</i></button>
+                <button class="btn btn-danger" id="app-delete-person"><i class="material-icons">remove</i></button>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/javascript" src="lib/AppModel.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+</html>
